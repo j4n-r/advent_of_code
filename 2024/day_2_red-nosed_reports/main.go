@@ -9,8 +9,8 @@ import (
 )
 
 func main() {
-	//readFile, err := os.Open("input.txt")
-	readFile, err := os.Open("sample.txt")
+	readFile, err := os.Open("input.txt")
+	//readFile, err := os.Open("sample.txt")
 	defer readFile.Close()
 	if err != nil {
 		fmt.Println(err)
@@ -31,24 +31,47 @@ func main() {
 			}
 			report = append(report, v)
 		}
-		for i, v := range report {
-
+		if report[0] == report[1] {
+			continue
 		}
-
-		fmt.Println(report)
+		if checkDecr(report) {
+			save++
+		} else if checkIncr(report) {
+			save++
+		} else {
+			continue
+		}
 	}
 	fmt.Println(save)
 }
-func checkValid(prev, curr, next int) bool {
-	if prev == curr || curr == next {
-		return false
-	}
-	if (prev-curr) > 3 && (curr-prev) > 3 {
-		return false
-	}
-	if (prev-curr) < -3 && (curr-prev) < -3 {
-		return false
+
+func checkIncr(report []int) bool {
+	for i := 0; i < len(report); i++ {
+		if i+1 >= len(report) {
+			fmt.Println(report)
+			break
+		}
+		if report[i] == report[i+1] {
+			return false
+		}
+		if (report[i]-report[i+1]) < -3 || (report[i]-report[i+1]) > -1 {
+			return false
+		}
 	}
 	return true
-
+}
+func checkDecr(report []int) bool {
+	for i := 0; i < len(report); i++ {
+		if i+1 >= len(report) {
+			fmt.Println(report)
+			break
+		}
+		if report[i] == report[i+1] {
+			return false
+		}
+		if (report[i]-report[i+1]) > 3 || (report[i]-report[i+1]) < 1 {
+			return false
+		}
+	}
+	return true
 }
