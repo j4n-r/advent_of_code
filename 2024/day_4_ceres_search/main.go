@@ -6,6 +6,8 @@ import (
 	"strings"
 )
 
+var count int = 0
+
 func main() {
 	readFile, err := os.ReadFile("sample.txt")
 	if err != nil {
@@ -16,51 +18,56 @@ func main() {
 
 	for x := range matrix {
 		for y := range matrix[x] {
-			if matrix[x][y] == "X" {
-				checkNN(matrix, x, y, 0)
-
-			}
-			fmt.Print(matrix[x][y])
+			checkNN(matrix, x, y, 0)
 		}
 	}
+	fmt.Println("count: ", count)
 
 }
 
-func checkNN(matrix [][]string, x int, y int, charPos int) bool {
-	row := len(matrix)
-	col := len(matrix)
+// forgot the direction, if the M is left to the X the A and S also have to be on the right side
+
+func checkNN(matrix [][]string, x int, y int, charPos int) {
+	row := len(matrix) - 1
+	// fmt.Println("rowlen: ", row)
+	col := len(matrix[0])
+	// fmt.Println("collen: ", col)
 	sstr := strings.Split("XMAS", "")
-	if matrix[x][y] != sstr[charPos] {
-		return false
-	}
+
+	fmt.Println(charPos)
+
+	charPos++
 	if charPos == 4 {
-		return true
+		count++
+		return
 	}
+
 	inRange := func(x, y int) bool {
-		return x <= row-1 && y <= col-1 && x > 0 && y > 0
+		// fmt.Printf("x: %d, y= %d\n", x, y)
+		return x <= row-1 && y <= col-1 && x >= 0 && y >= 0
 	}
 
 	switch {
-	case inRange(x, y-1):
-		checkNN(matrix, x, y-1, charPos+1)
-	case matrix[x][y+1]:
-		checkNN(matrix, x, y+1, charPos+1)
-	case matrix[x+1][y]:
-		checkNN(matrix, x+1, y, charPos+1)
-	case matrix[x+1][y+1]:
-		checkNN(matrix, x+1, y+1, charPos+1)
-	case matrix[x+1][y-1]:
-		checkNN(matrix, x+1, y-1, charPos+1)
-	case matrix[x-1][y]:
-		checkNN(matrix, x-1, y, charPos+1)
-	case matrix[x-1][y+1]:
-		checkNN(matrix, x-1, y+1, charPos+1)
-	case matrix[x-1][y-1]:
-		checkNN(matrix, x-1, y-1, charPos+1)
+	case inRange(x, y-1) && matrix[x][y-1] == sstr[charPos]:
+		checkNN(matrix, x, y-1, charPos)
+	case inRange(x, y+1) && matrix[x][y+1] == sstr[charPos]:
+		checkNN(matrix, x, y+1, charPos)
+	case inRange(x+1, y) && matrix[x+1][y] == sstr[charPos]:
+		checkNN(matrix, x+1, y, charPos)
+	case inRange(x+1, y+1) && matrix[x+1][y+1] == sstr[charPos]:
+		checkNN(matrix, x+1, y+1, charPos)
+	case inRange(x+1, y-1) && matrix[x+1][y-1] == sstr[charPos]:
+		checkNN(matrix, x+1, y-1, charPos)
+	case inRange(x-1, y) && matrix[x-1][y] == sstr[charPos]:
+		checkNN(matrix, x-1, y, charPos)
+	case inRange(x-1, y+1) && matrix[x-1][y+1] == sstr[charPos]:
+		checkNN(matrix, x-1, y+1, charPos)
+	case inRange(x-1, y-1) && matrix[x-1][y-1] == sstr[charPos]:
+		checkNN(matrix, x-1, y-1, charPos)
 	default:
-		return false
+		return
 	}
-	return false
+	return
 }
 
 func initMatrix(input string) [][]string {
