@@ -1,0 +1,20 @@
+trace: { count = 0; dial_pos = 50; }
+trace: { curr_val = 50; op = { op = "L"; val = 68; }; }
+trace: { count = 0; dial_pos = 82; }
+trace: { curr_val = 82; op = { op = "L"; val = 30; }; }
+trace: { count = 0; dial_pos = 52; }
+trace: { curr_val = 52; op = { op = "R"; val = 48; }; }
+trace: { count = 0; dial_pos = 0; }
+trace: { curr_val = 0; op = { op = "L"; val = 5; }; }
+trace: { count = 1; dial_pos = 95; }
+trace: { curr_val = 95; op = { op = "R"; val = 60; }; }
+trace: { count = 1; dial_pos = 55; }
+trace: { curr_val = 55; op = { op = "L"; val = 55; }; }
+trace: { count = 1; dial_pos = 0; }
+trace: { curr_val = 0; op = { op = "L"; val = 1; }; }
+trace: { count = 2; dial_pos = 99; }
+trace: { curr_val = 99; op = { op = "L"; val = 99; }; }
+trace: { count = 2; dial_pos = 0; }
+trace: { curr_val = 0; op = { op = "R"; val = 14; }; }
+trace: { count = 3; dial_pos = 0; }
+trace: { curr_val = 0; op = { op = "L"; val = 82; }; }
