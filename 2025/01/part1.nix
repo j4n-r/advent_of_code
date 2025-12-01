@@ -23,7 +23,7 @@ let
       }
   ) splits;
 
-  move_dial = curr: op: lib.mod (curr+op) 100;
+  move_dial = curr: op: lib.mod (curr + op) 100;
 
   # returns the new dial pos
   getNewValue = (
@@ -36,9 +36,9 @@ let
     in
     if op.op == "L" then
       # if builtins.trace (curr_val - op.val < 0) curr_val - op.val < 0 then
-      move_dial  curr_dial_pos_dbg  (-op.val)
+      move_dial curr_dial_pos_dbg (-op.val)
     else
-      move_dial  curr_dial_pos_dbg  op.val
+      move_dial curr_dial_pos_dbg op.val
   );
 
   check_list = (

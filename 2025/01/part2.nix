@@ -23,50 +23,59 @@ let
       }
   ) splits;
 
-  move_dial = curr: op: lib.mod (curr+op) 100;
-
-  normalize_left = (
-    { curr_val, op_val, counter }:
-    let
-      new_val = curr_val - op_val;
-    in
-    if new_val >= 0 then
-      new_val
-    else
-      normalize_left {
-        curr_val = new_val + 100;
-        op_val = 0;
-      }
-
-  );
-  normalize_right = (
-    { curr_val, op_val }:
-    let
-      new_val = curr_val + op_val;
-    in
-    if new_val > 99 then
-      normalize_right {
-        curr_val = new_val - 100;
+  move_dial_left = (
+    {
+      curr,
+      op_val,
+      count,
+    }:
+    if lib.debug.traceSeq {inherit curr op_val count;} curr - op_val < 0 then
+    # if  curr - op_val <= 0 then
+      move_dial_left {
+        count = count + 1;
+        curr = (curr - op_val) + 100;
         op_val = 0;
       }
     else
-      curr_val
+      {
+        count = if curr == 0 then count+1 else count;
+        dial_pos = curr - op_val;
+      }
   );
 
+  move_dial_right = (
+    {
+      curr,
+      op_val,
+      count,
+    }:
+    if lib.debug.traceSeq {inherit curr op_val count;} curr + op_val > 100 then
+    #if curr + op_val > 100 then
+      move_dial_right {
+        count = count + 1;
+        curr = (curr + op_val) - 100;
+        op_val = 0;
+      }
+    else
+      {
+        count = if curr == 0 then count+1 else count;
+        dial_pos = curr + op_val;
+      }
+  );
   # returns the new dial pos
   getNewValue = (
-    { curr_dial_pos, op}:
+    { curr_dial_pos, op, count }:
     let
-      curr_dial_pos_dbg = lib.debug.traceSeq {
-        inherit op;
-        curr_val = curr_dial_pos;
-      } curr_dial_pos;
+      # curr_dial_pos_dbg = lib.debug.traceSeq {
+      #   inherit op;
+      #   curr_val = curr_dial_pos;
+      # } curr_dial_pos;
     in
     if op.op == "L" then
       # if builtins.trace (curr_val - op.val < 0) curr_val - op.val < 0 then
-      move_dial  curr_dial_pos_dbg  (-op.val)
+      move_dial_left {count=count; curr=curr_dial_pos; op_val = (op.val);}
     else
-      move_dial  curr_dial_pos_dbg  op.val
+      move_dial_right {count=count; curr=curr_dial_pos; op_val = (op.val);}
   );
 
   check_list = (
@@ -86,21 +95,14 @@ let
         op = builtins.head list;
         # new_value = builtins.trace (getNewValue { inherit curr_val op; }) getNewValue {
         res = getNewValue {
-          inherit op;
+          inherit op count;
           curr_dial_pos = dial_pos;
         };
-        new_pos = res.curr_pos;
-        counter = res.counter;
+        new_pos = res.dial_pos;
+        new_count = res.count;
       in
-      if lib.debug.traceSeq { inherit count dial_pos; } (dial_pos == 0) then
         check_list {
-          count = count + 1;
-          list = builtins.tail list;
-          dial_pos = new_pos;
-        }
-      else
-        check_list {
-          count = count;
+          count = new_count;
           list = builtins.tail list;
           dial_pos = new_pos;
         }
