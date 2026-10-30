@@ -1,5 +1,5 @@
 def parse_input() -> list[str]:
-    f = open("input.txt")
+    f = open("test_input.txt")
     content = f.read()
     lines = content.split()
     out = []
